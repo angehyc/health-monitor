@@ -1,6 +1,35 @@
 import { paint } from "./help/paint";
 import { paintStartScreen } from "./screens/startScreen";
-import { supabase } from "./supabase";
+
+// Supabase client setup
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = "https://fioyevfhztdmjtblclwj.supabase.co";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpb3lldmZoenRkbWp0YmxjbHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODIxNjM2MDYsImV4cCI6MTk5NzczOTYwNn0.ixyy-AxrTl7L5_N7ioWO3PhuxykgKovemF7g-TBIARs";
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+// const channel = supabase
+//   .channel('table-db-changes')
+//   .on(
+//     'postgres_changes',
+//     {
+//       event: '*',
+//       schema: 'public',
+//       table: 'users',
+//     },
+//     (payload) => {
+//       // Create and insert DOM nodes representing each user
+//       const users = payload.payload;
+//       users.forEach(user => {
+//         const userNode = document.createElement('div');
+//         userNode.textContent = user.name;
+//         document.body.appendChild(userNode);
+//       });
+//     }
+//   )
+//   .subscribe();
+// channel.unsubscribe();
 
 //!__________________________________________
 

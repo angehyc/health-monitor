@@ -1,4 +1,5 @@
 import { paint } from "../help/paint";
+import { supabase } from "../main";
 import { paintStartScreen } from "./startScreen";
 import { paintTeamConfirmScreen } from "./teamConfirmScreen";
 
@@ -24,8 +25,13 @@ export const paintNameScreen = () => {
     paintStartScreen();
   });
 
+  const nameInput = document.querySelector("#nameInput");
+
   const confirmButton = document.querySelector("#confirmButton");
-  confirmButton.addEventListener("click", () => {
-    paintTeamConfirmScreen();
+
+  confirmButton.addEventListener("click", async () => {
+    await supabase.from("users").insert({ username: nameInput.value });
+
+    paintTeamConfirmScreen(nameInput.value);
   });
 };
