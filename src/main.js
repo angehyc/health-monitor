@@ -1,8 +1,12 @@
 import { paint } from "./help/paint";
+import { paintNameScreen } from "./screens/nameScreen";
 import { paintStartScreen } from "./screens/startScreen";
 
 // Supabase client setup
 import { createClient } from "@supabase/supabase-js";
+import { paintTeamConfirmScreen } from "./screens/teamConfirmScreen";
+import { paintVoteScreen } from "./screens/voteScreen";
+import { paintResultScreen } from "./screens/resultScreen";
 
 const supabaseUrl = "https://fioyevfhztdmjtblclwj.supabase.co";
 const supabaseKey =
@@ -31,10 +35,11 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 //   .subscribe();
 // channel.unsubscribe();
 
+// TODO what happens when someone else comes into the room - we should take them instantly to voting (or wherever the other peeps are at (end session button / room status column)
 //!__________________________________________
 
 //*Start Screen
-paintStartScreen();
+paintResultScreen("2477028024862069");
 
 //*Name Screen
 
