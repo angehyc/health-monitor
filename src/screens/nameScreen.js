@@ -21,7 +21,7 @@ const nameScreen = /*html*/ `
         <input class="border border-black w-96 h-30 p-4 text-5xl text-blue-600" id="nameInput" type="text" />
       </div>
       <button
-        class="bg-green-500 text-[#fff] text-lg font-comic-sans rounded-full px-6 py-2 -skew-y-12"
+        class="bg-green-500 text-[#fff] text-2xl font-comic-sans rounded-full px-6 py-8 -skew-y-12"
         id="confirmButton"
       >
         confirm

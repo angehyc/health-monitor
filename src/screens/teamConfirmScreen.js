@@ -13,7 +13,7 @@ const teamConfirmScreen = /*html*/ `
 </div>
 <div class="font-comic-sans text-3xl font-bold bg-[rgb(132,204,22,0.5)] p-5 pr-24">
   <span class="">is the whole team here?</span>
-  <button class="text-[#dbff00] bg-[#868686] p-4 mr-2" id="yesButton">yes</button>
+  <button class="text-[#dbff00] bg-[#868686] p-4 mr-2 skew-x-6" id="yesButton">yes</button>
   <button class="text-[#dbff00] bg-[#868686] p-4 absolute" id="noButton">no</button>
 </div>
 </div>
