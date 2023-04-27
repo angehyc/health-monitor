@@ -39,7 +39,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 //!__________________________________________
 
 //*Start Screen
-paintResultScreen("2477028024862069");
+paintStartScreen();
 
 //*Name Screen
 
