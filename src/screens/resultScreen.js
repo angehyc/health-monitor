@@ -28,8 +28,10 @@ const resultScreen = /*html*/ `
 ></button>
 </div> */
 
+// ! bug where new user doesn't show up lol
 const paintUsersWithVote = async (container) => {
   const result = await supabase.from("users").select("*");
+  console.log("DATA: ", result.data);
   container.innerHTML = "";
   for (let user of result.data) {
     let userVote;
@@ -73,7 +75,19 @@ export const paintResultScreen = async (userId) => {
       // listening to when users enter and leave
       "postgres_changes",
       {
-        event: "*",
+        event: "INSERT",
+        schema: "public",
+        table: "users",
+      },
+      async (payload) => {
+        paintUsersWithVote(teamNames);
+      }
+    )
+    .on(
+      // listening to when users enter and leave
+      "postgres_changes",
+      {
+        event: "DELETE",
         schema: "public",
         table: "users",
       },
@@ -92,7 +106,10 @@ export const paintResultScreen = async (userId) => {
       async (payload) => {
         const endTime = new Date(payload.new.timer_end);
         channel.unsubscribe();
-        paintVoteScreen(userId, endTime);
+
+        if (payload.new.status === "voting") {
+          paintVoteScreen(userId, endTime);
+        }
       }
     )
     .subscribe();
@@ -101,12 +118,12 @@ export const paintResultScreen = async (userId) => {
   const nextRoundButton = document.querySelector("#nextRoundButton");
   nextRoundButton.addEventListener("click", () => {
     const now = new Date();
-    const futureTime = new Date(now.getTime() + 30000);
+    const futureTime = new Date(now.getTime() + 5000);
 
     const updateEntry = async () => {
       const { data, error } = await supabase
         .from("room")
-        .update({ timer_end: futureTime })
+        .update({ timer_end: futureTime, status: "voting" })
         .match({ room_id: 2 });
     };
 

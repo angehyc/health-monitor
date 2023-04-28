@@ -7,6 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 import { paintTeamConfirmScreen } from "./screens/teamConfirmScreen";
 import { paintVoteScreen } from "./screens/voteScreen";
 import { paintResultScreen } from "./screens/resultScreen";
+import { startCleanupProcess } from "./help/heartbeat";
 
 const supabaseUrl = "https://fioyevfhztdmjtblclwj.supabase.co";
 const supabaseKey =
@@ -40,6 +41,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 
 //*Start Screen
 paintStartScreen();
+startCleanupProcess();
 
 //*Name Screen
 

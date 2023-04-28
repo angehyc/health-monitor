@@ -1,6 +1,8 @@
+import { startHeartbeat } from "../help/heartbeat";
 import { paint } from "../help/paint";
 import { supabase } from "../main";
 import { paintNameScreen } from "./nameScreen";
+import { paintResultScreen } from "./resultScreen";
 import { paintVoteScreen } from "./voteScreen";
 
 const teamConfirmScreen = /*html*/ `
@@ -63,13 +65,28 @@ export const paintTeamConfirmScreen = async (userId) => {
   // display names
   // TODO - on user disconnect (presence), delete user!! - maybe link user id to presence id?
   // subscribing to the DB to listen for changes to users and when someone presses 'yes'
+  const stopHeartbeat = startHeartbeat(userId);
+
   const channel = supabase
     .channel("users")
     .on(
       // listening to when users enter and leave
       "postgres_changes",
       {
-        event: "*",
+        event: "INSERT",
+        schema: "public",
+        table: "users",
+      },
+
+      async (payload) => {
+        paintUsers(teamNames);
+      }
+    )
+    .on(
+      // listening to when users enter and leave
+      "postgres_changes",
+      {
+        event: "DELETE",
         schema: "public",
         table: "users",
       },
@@ -86,6 +103,7 @@ export const paintTeamConfirmScreen = async (userId) => {
         table: "room",
       },
       async (payload) => {
+        console.log("ROOM CHANGED", payload);
         const endTime = new Date(payload.new.timer_end);
         channel.unsubscribe();
         paintVoteScreen(userId, endTime);
@@ -97,6 +115,7 @@ export const paintTeamConfirmScreen = async (userId) => {
   const backButton = document.querySelector("#backButton");
   backButton.addEventListener("click", async () => {
     await supabase.from("users").delete().eq("user_id", userId);
+    (await stopHeartbeat)();
     channel.unsubscribe();
     paintNameScreen();
   });
@@ -104,12 +123,12 @@ export const paintTeamConfirmScreen = async (userId) => {
   const yesButton = document.querySelector("#yesButton");
   yesButton.addEventListener("click", () => {
     const now = new Date();
-    const futureTime = new Date(now.getTime() + 30000);
+    const futureTime = new Date(now.getTime() + 5000);
 
     const updateEntry = async () => {
       const { data, error } = await supabase
         .from("room")
-        .update({ timer_end: futureTime })
+        .update({ timer_end: futureTime, status: "voting" })
         .match({ room_id: 2 });
 
       if (error) console.log("Error updating entry:", error.message);
@@ -149,4 +168,18 @@ export const paintTeamConfirmScreen = async (userId) => {
 
   // show the initial users
   paintUsers(teamNames);
+
+  // redirect!
+  const {
+    data: [room],
+  } = await supabase.from("room").select("*");
+
+  if (room.status === "voting") {
+    const endTime = new Date(room.timer_end);
+    channel.unsubscribe();
+    paintVoteScreen(userId, endTime);
+  }
+  if (room.status === "result") {
+    paintResultScreen(userId);
+  }
 };

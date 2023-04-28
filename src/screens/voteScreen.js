@@ -35,11 +35,15 @@ export const paintVoteScreen = (userId, endTime) => {
   const deltaTimeElement = document.querySelector("#deltaTime");
   paint(startingSeconds, deltaTimeElement);
 
-  const intervalId = setInterval(() => {
+  const intervalId = setInterval(async () => {
     const nowTime = new Date();
     const secondsLeft = Math.floor((endTime - nowTime) / 1000);
     if (secondsLeft <= 0) {
       clearInterval(intervalId);
+      await supabase
+        .from("room")
+        .update({ status: "result" })
+        .match({ room_id: 2 });
       paintResultScreen(userId);
       return;
     }
